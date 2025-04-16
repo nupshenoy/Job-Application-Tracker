@@ -9,7 +9,7 @@ const AddJob = () => {
     company: "",
     role: "",
     status: "Applied",
-    date: "",
+    applicationDate: "",
     link: "",
   });
 
@@ -20,7 +20,7 @@ const AddJob = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.company || !formData.role || !formData.date || !formData.link) {
+    if (!formData.company || !formData.role || !formData.applicationDate || !formData.link) {
       alert("Please fill in all required fields.");
       return;
     }
@@ -29,7 +29,7 @@ const AddJob = () => {
       company: formData.company,
       role: formData.role,
       status: formData.status,
-      date: formData.date,
+      applicationDate: formData.applicationDate,
       link: formData.link,
     });
 
@@ -44,40 +44,6 @@ const AddJob = () => {
       })
   };
 
-
-  // const [company, setCompany] = useState('')
-  // const [role, setRole] = useState('')
-  // const [status, setStatus] = useState('')
-  // const [date, setDate] = useState('')
-  // const [link, setLink] = useState('')
-
-
-  // const handleSubmit = (event) => {
-  //   event.preventDefauly();
-
-  //   if (!company || !role || !status || !date || !link) {
-  //     alert('Please fill in all the fields');
-  //     return;
-  //   }
-
-  //   const job = {
-  //     company,
-  //     role,
-  //     status,
-  //     date,
-  //     link
-  //   }
-
-  //   axios
-  //     .post('https://localhost:5000/jobs', job)
-  //     .then(() => {
-  //       console.log("Navigating to home")
-  //       navigate('/')
-  //     })
-  //     .catch((err) => {
-  //       console.log(err.message)
-  //     })
-  // }
 
   return (
     <div className="max-w-md mx-auto bg-white shadow-xl rounded-2xl p-6 mt-6">
@@ -117,8 +83,8 @@ const AddJob = () => {
 
         <input
           type="date"
-          name="date"
-          value={formData.date}
+          name="applicationDate"
+          value={formData.applicationDate}
           onChange={handleChange}
           className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring"
           required

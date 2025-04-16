@@ -15,7 +15,7 @@ const jobSchema = new mongoose.Schema({
     enum: ['Applied', 'Interview', 'Offer', 'Rejected'],
     default: 'Applied'
   },
-  date: {
+  applicationDate: {
     type: Date,
     required: true
   },
