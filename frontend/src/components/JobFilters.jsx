@@ -1,4 +1,3 @@
-// JobFilters.jsx
 import React from 'react';
 
 import { IoFilter } from "react-icons/io5";
@@ -17,7 +16,7 @@ const JobFilters = ({
               id="statusFilter"
               value={statusFilter}
               onChange={onStatusChange}
-              className=" shadow-sm border border-blue-800 text-sm font-bold text-left text-gray-700 uppercase px-4 py-2 rounded cursor-pointer"
+              className=" shadow-sm border border-gray-200 bg-white text-sm font-bold text-left text-gray-700 uppercase px-4 py-2 rounded cursor-pointer"
             >
               <option value="">All</option>
               <option value="Applied">Applied</option>
@@ -35,7 +34,7 @@ const JobFilters = ({
               type="date"
               value={dateFilter}
               onChange={onDateChange}
-              className="shadow-sm border border-blue-800 text-sm font-bold px-4 py-2 rounded cursor-pointer"
+              className="shadow-sm border border-gray-200 bg-white  text-sm font-bold px-4 py-2 rounded cursor-pointer"
             />
           </div>
     </div>
