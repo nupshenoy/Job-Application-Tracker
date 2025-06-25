@@ -80,7 +80,7 @@ const JobTable = ({ jobs, onEdit, getStatusClass }) => {
                   "-"
                 )}
               </td>
-              <td className="px-6 py-4 font-medium text-gray-900 flex items-center">
+              <td className="px-6 py-4 font-medium text-gray-900 flex  items-center">
                 <button
                   onClick={() => onEdit(job)} 
                   className="text-blue-800 px-3 py-1 mr-1 text-xl cursor-pointer hover:text-blue-500"

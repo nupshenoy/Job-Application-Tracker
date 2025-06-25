@@ -1,40 +1,69 @@
+
 import React, { useState } from "react";
 import { useJobs } from "../context/JobContext";
 import EditJob from "./EditJob";
 import JobTable from "../components/JobTable";
 import FiltersModal from "../components/FiltersModal";
 import { IoFilterSharp } from "react-icons/io5";
+import { IoClose } from "react-icons/io5";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Home = () => {
   const { jobs, deleteJob, updateJobStatus, updateJob } = useJobs();
 
-  // Filters
+  // Filters state
   const [filters, setFilters] = useState({
-    status: "",
-    applicationDate: "",
-    company: "",
-    role: "",
+    status: [],
+    company: [],
+    role: [],
+    dateFrom: "",
+    dateTo: "",
   });
+
+
+  const [isFiltersModalOpen, setIsFiltersModalOpen] = useState(false);
+
+  const handleClearFilters = () =>
+    setFilters({
+      status: [],
+      company: [],
+      role: [],
+      dateFrom: "",
+      dateTo: "",
+    });
 
   const filteredJobs = jobs.filter((job) => {
-    const statusMatch = filters.status ? job.status === filters.status : true;
-    const dateMatch = filters.applicationDate
-      ? job.applicationDate?.slice(0, 10) === filters.applicationDate
-      : true;
-    const companyMatch = filters.company
-      ? job.company?.toLowerCase().includes(filters.company.toLowerCase())
-      : true;
-    const roleMatch = filters.role
-      ? job.role?.toLowerCase().includes(filters.role.toLowerCase())
-      : true;
+    const matchesStatus =
+      filters.status.length === 0 ||
+      filters.status.includes(job.status);
 
-    return statusMatch && dateMatch && companyMatch && roleMatch;
+    const matchesCompany =
+      filters.company.length === 0 ||
+      filters.company.some(
+        (c) => c.toLowerCase() === job.company.toLowerCase()
+      );
+    const matchesRole =
+      filters.role.length === 0 ||
+      filters.role.some((r) => r.toLowerCase() === job.role.toLowerCase());
+
+    const jobDate = job.applicationDate?.slice(0, 10);
+    const matchesDateFrom = filters.dateFrom
+      ? jobDate >= filters.dateFrom
+      : true;
+    const matchesDateTo = filters.dateTo ? jobDate <= filters.dateTo : true;
+
+    return (
+      matchesStatus &&
+      matchesCompany &&
+      matchesRole &&
+      matchesDateFrom &&
+      matchesDateTo
+    );
   });
 
-  // Modal logic
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // Edit Modal state
   const [editingJob, setEditingJob] = useState(null);
-  const [isFiltersModalOpen, setIsFiltersModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openEditModal = (job) => {
     setEditingJob(job);
@@ -51,43 +80,103 @@ const Home = () => {
     closeEditModal();
   };
 
+  const removeFilter = (type, value) => {
+    setFilters((prev) => ({
+      ...prev,
+      [type]: prev[type].filter((v) => v !== value),
+    }));
+  };
+
+  const getChipColorClass = (value, type) => {
+    if (type === "status") {
+      switch (value) {
+        case "Applied":
+          return "bg-blue-100 text-blue-800 border-blue-300 hover:bg-blue-200";
+        case "Interview":
+          return "bg-yellow-100 text-yellow-800 border-yellow-300 hover:bg-yellow-200";
+        case "Offer":
+          return "bg-green-100 text-green-800 border-green-300 hover:bg-green-200";
+        case "Rejected":
+          return "bg-red-100 text-red-800 border-red-300 hover:bg-red-200";
+        default:
+          return "bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200";
+      }
+    }
+
+    const hash = [...value].reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const colors = [
+      "bg-indigo-100 text-indigo-800 border-indigo-300 hover:bg-indigo-200",
+      "bg-pink-100 text-pink-800 border-pink-300 hover:bg-pink-200",
+      "bg-purple-100 text-purple-800 border-purple-300 hover:bg-purple-200",
+      "bg-teal-100 text-teal-800 border-teal-300 hover:bg-teal-200",
+    ];
+    return colors[hash % colors.length];
+  };
+
   return (
     <div className="container mx-auto px-4 py-6">
-      {/* Controls */}
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex gap-2">
-          <button
-            onClick={() => setIsFiltersModalOpen(true)}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 cursor-pointer"
-          >
-            <div className="flex gap-2 items-center">
-              <IoFilterSharp />
-             Filters
-            </div>
-          </button>
-          <button
-            onClick={() =>
-              setFilters({
-                status: "",
-                applicationDate: "",
-                company: "",
-                role: "",
-              })
-            }
-            className="bg-gray-300 text-black px-4 py-2 rounded-md hover:bg-gray-400 cursor-pointer"
-          >
-            Clear Filters
-          </button>
-        </div>
+      {/* Filters Button & Chips */}
+      <div className="flex flex-wrap items-center gap-2 mb-4">
+        <button
+          onClick={() => setIsFiltersModalOpen(true)}
+          className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 border px-3 py-2 rounded-md text-sm font-medium cursor-pointer"
+        >
+          <IoFilterSharp />
+          Filters
+        </button>
+
+        <AnimatePresence>
+          {[...filters.status, ...filters.company, ...filters.role].map((val) => {
+            const type =
+              filters.status.includes(val)
+                ? "status"
+                : filters.company.includes(val)
+                ? "company"
+                : "role";
+            return (
+              <motion.button
+                key={type + val}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.1 }}
+                className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm border cursor-pointer font-medium transition ${getChipColorClass(val, type)}`}
+                onClick={() => removeFilter(type, val)}
+              >
+                {val} <IoClose className="text-sm" />
+              </motion.button>
+            );
+          })}
+        </AnimatePresence>
+
+        {(filters.status.length > 0 ||
+  filters.company.length > 0 ||
+  filters.role.length > 0 ||
+  filters.dateFrom ||
+  filters.dateTo) && (
+  <motion.button
+    initial={{ opacity: 0, scale: 0.9 }}
+    animate={{ opacity: 1, scale: 1 }}
+    exit={{ opacity: 0, scale: 0.8 }}
+    transition={{ duration: 0.2 }}
+    onClick={handleClearFilters}
+    className="flex items-center gap-1 px-3 py-1 rounded-full text-sm border font-medium cursor-pointer bg-gray-200 text-gray-600 hover:bg-gray-300"
+  >
+    Clear All <IoClose className="text-sm" />
+  </motion.button>
+)}
       </div>
 
       {/* Filters Modal */}
-      <FiltersModal
-        isOpen={isFiltersModalOpen}
-        onClose={() => setIsFiltersModalOpen(false)}
-        filters={filters}
-        setFilters={setFilters}
-      />
+      {isFiltersModalOpen && (
+        <FiltersModal
+          filters={filters}
+          setFilters={setFilters}
+          onClose={() => setIsFiltersModalOpen(false)}
+          onClear={handleClearFilters}
+          jobs={jobs}
+        />
+      )}
 
       {/* Edit Modal */}
       <EditJob
@@ -97,33 +186,27 @@ const Home = () => {
         onUpdate={handleEditSubmit}
       />
 
-      {/* Job Table */}
-      {filteredJobs.length === 0 ? (
-        <div className="text-center text-gray-500 mt-10">
-          No jobs found with the applied filters.
-        </div>
-      ) : (
-        <JobTable
-          jobs={filteredJobs}
-          onEdit={openEditModal}
-          onDelete={deleteJob}
-          onStatusChange={updateJobStatus}
-          getStatusClass={(status) => {
-            switch (status) {
-              case "Applied":
-                return "bg-blue-500";
-              case "Interview":
-                return "bg-yellow-500";
-              case "Offer":
-                return "bg-green-500";
-              case "Rejected":
-                return "bg-red-500";
-              default:
-                return "bg-gray-500";
-            }
-          }}
-        />
-      )}
+      {/* Table */}
+      <JobTable
+        jobs={filteredJobs}
+        onEdit={openEditModal}
+        onDelete={deleteJob}
+        onStatusChange={updateJobStatus}
+        getStatusClass={(status) => {
+          switch (status) {
+            case "Applied":
+              return "bg-blue-500";
+            case "Interview":
+              return "bg-yellow-500";
+            case "Offer":
+              return "bg-green-500";
+            case "Rejected":
+              return "bg-red-500";
+            default:
+              return "bg-gray-500";
+          }
+        }}
+      />
     </div>
   );
 };
