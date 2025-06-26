@@ -63,8 +63,8 @@ function SignUpPage() {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen w-full pt-16">
-      <div className="container mx-auto w-1/3 p-4 bg-white shadow-md rounded-lg">
+    <div className=" w-full pt-16">
+      <div className="container mx-auto w-1/3 p-6 bg-white shadow-md rounded-lg">
         <p className="text-4xl font-bold mb-2">Get Started</p>
         <p className="text-sm text-gray-500 mb-8 pb-3 border-b border-gray-300">
           Create your job tracker account

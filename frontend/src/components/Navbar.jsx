@@ -26,7 +26,7 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="shadow-xl pb-2 pt-6 z-10 relative bg-white">
+      <div className="shadow-xl pb-2 pt-6 z-10 bg-white">
         <div className="container mx-auto ">
           <div className="flex justify-between items-center">
             <NavLink to="/dashboard">

@@ -1,12 +1,13 @@
 import { LuFilter } from "react-icons/lu";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useJobs } from "../context/JobContext";
 import EditJob from "./EditJob";
 import JobTable from "../components/JobTable";
 import FiltersModal from "../components/FiltersModal";
 import { IoClose, IoSearchSharp } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
-
+import SearchBar from "../components/SearchBar";
+import FilterChips from "../components/FilterChips";
 
 const Home = () => {
   const { jobs, deleteJob, updateJobStatus, updateJob } = useJobs();
@@ -24,6 +25,10 @@ const Home = () => {
   const [isFiltersModalOpen, setIsFiltersModalOpen] = useState(false);
   const [showAllChips, setShowAllChips] = useState(false);
 
+  //Pagination Data
+  const [currentPage, setCurrentPage] = useState(1);
+  const jobsPerPage = 10;
+
   const handleClearFilters = () =>
     setFilters({
       status: [],
@@ -34,6 +39,7 @@ const Home = () => {
       keyword: "",
     });
 
+  //Filtered Jobs
   const filteredJobs = jobs.filter((job) => {
     const matchesStatus =
       filters.status.length === 0 || filters.status.includes(job.status);
@@ -68,6 +74,12 @@ const Home = () => {
       matchesKeyword
     );
   });
+
+  //Pagination Data
+  const indexOfLastJob = currentPage * jobsPerPage;
+  const indexOfFirstJob = indexOfLastJob - jobsPerPage;
+  const currentJobs = filteredJobs.slice(indexOfFirstJob, indexOfLastJob);
+  const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
 
   // Edit Modal state
   const [editingJob, setEditingJob] = useState(null);
@@ -124,28 +136,22 @@ const Home = () => {
   const chips = [...filters.status, ...filters.company, ...filters.role];
   const visibleChips = showAllChips ? chips : chips.slice(0, 4);
 
+  //Resets pagination to page 1 when filters are modified
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filters]);
+
   return (
     <div className="container mx-auto px-4 py-6">
+      
       {/* Search and Filters Row */}
       <div className="flex flex-wrap items-center gap-2 mb-4">
-        <div className="relative w-1/3 min-w-[200px]">
-          <IoSearchSharp className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-          <input
-            type="text"
-            placeholder="Search jobs by company or role..."
-            value={filters.keyword || ""}
-            onChange={(e) =>
-              setFilters((prev) => ({ ...prev, keyword: e.target.value }))
-            }
-            className=" bg-white pl-10 pr-8 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 w-full"
-          />
-          {filters.keyword && (
-            <IoClose
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
-              onClick={() => setFilters((prev) => ({ ...prev, keyword: "" }))}
-            />
-          )}
-        </div>
+        <SearchBar
+          keyword={filters.keyword}
+          setKeyword={(value) =>
+            setFilters((prev) => ({ ...prev, keyword: value }))
+          }
+        />
 
         <button
           onClick={() => setIsFiltersModalOpen(true)}
@@ -154,7 +160,16 @@ const Home = () => {
           <LuFilter />
         </button>
 
-        {(filters.status.length > 0 ||
+       {/* <FilterChips
+  filters={filters}
+  removeFilter={removeFilter}
+  showAllChips={showAllChips}
+  setShowAllChips={setShowAllChips}
+  handleClearFilters={handleClearFilters}
+  getChipColorClass={getChipColorClass}
+/> */}
+
+         {(filters.status.length > 0 ||
           filters.company.length > 0 ||
           filters.role.length > 0 ||
           filters.dateFrom ||
@@ -171,8 +186,7 @@ const Home = () => {
           </motion.button>
         )}
       </div>
-
-      {/* Chips */}
+      
       <div className="flex flex-wrap gap-2 mb-4 items-center">
         <AnimatePresence>
           {visibleChips.map((val) => {
@@ -208,9 +222,9 @@ const Home = () => {
             {showAllChips ? "Show Less" : `+${chips.length - 4} more`}
           </button>
         )}
-      </div>
+          
+      </div> 
 
-     
       {/* Filters Modal */}
       {isFiltersModalOpen && (
         <FiltersModal
@@ -222,7 +236,6 @@ const Home = () => {
         />
       )}
 
-
       {/* Edit Modal */}
       <EditJob
         isOpen={isModalOpen}
@@ -232,16 +245,19 @@ const Home = () => {
       />
 
       {/* Job Count */}
-<div className="mb-2 mx-1 text-sm text-gray-600 font-semibold">
-  Showing {filteredJobs.length} job{filteredJobs.length !== 1 && "s"}
-</div>
+      <div className="mb-2 mx-2 text-sm text-gray-600 font-semibold">
+        Showing {filteredJobs.length} job{filteredJobs.length !== 1 && "s"}
+      </div>
 
       {/* Table */}
       <JobTable
-        jobs={filteredJobs}
+        jobs={currentJobs}
         onEdit={openEditModal}
         onDelete={deleteJob}
         onStatusChange={updateJobStatus}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
         getStatusClass={(status) => {
           switch (status) {
             case "Applied":
