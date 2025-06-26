@@ -1,12 +1,12 @@
-
+import { LuFilter } from "react-icons/lu";
 import React, { useState } from "react";
 import { useJobs } from "../context/JobContext";
 import EditJob from "./EditJob";
 import JobTable from "../components/JobTable";
 import FiltersModal from "../components/FiltersModal";
-import { IoFilterSharp } from "react-icons/io5";
-import { IoClose } from "react-icons/io5";
+import { IoClose, IoSearchSharp } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
+
 
 const Home = () => {
   const { jobs, deleteJob, updateJobStatus, updateJob } = useJobs();
@@ -18,10 +18,11 @@ const Home = () => {
     role: [],
     dateFrom: "",
     dateTo: "",
+    keyword: "",
   });
 
-
   const [isFiltersModalOpen, setIsFiltersModalOpen] = useState(false);
+  const [showAllChips, setShowAllChips] = useState(false);
 
   const handleClearFilters = () =>
     setFilters({
@@ -30,12 +31,12 @@ const Home = () => {
       role: [],
       dateFrom: "",
       dateTo: "",
+      keyword: "",
     });
 
   const filteredJobs = jobs.filter((job) => {
     const matchesStatus =
-      filters.status.length === 0 ||
-      filters.status.includes(job.status);
+      filters.status.length === 0 || filters.status.includes(job.status);
 
     const matchesCompany =
       filters.company.length === 0 ||
@@ -52,12 +53,19 @@ const Home = () => {
       : true;
     const matchesDateTo = filters.dateTo ? jobDate <= filters.dateTo : true;
 
+    const keyword = filters.keyword.toLowerCase();
+    const matchesKeyword =
+      keyword === "" ||
+      job.company.toLowerCase().includes(keyword) ||
+      job.role.toLowerCase().includes(keyword);
+
     return (
       matchesStatus &&
       matchesCompany &&
       matchesRole &&
       matchesDateFrom &&
-      matchesDateTo
+      matchesDateTo &&
+      matchesKeyword
     );
   });
 
@@ -113,60 +121,96 @@ const Home = () => {
     return colors[hash % colors.length];
   };
 
+  const chips = [...filters.status, ...filters.company, ...filters.role];
+  const visibleChips = showAllChips ? chips : chips.slice(0, 4);
+
   return (
     <div className="container mx-auto px-4 py-6">
-      {/* Filters Button & Chips */}
+      {/* Search and Filters Row */}
       <div className="flex flex-wrap items-center gap-2 mb-4">
+        <div className="relative w-1/3 min-w-[200px]">
+          <IoSearchSharp className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+          <input
+            type="text"
+            placeholder="Search jobs by company or role..."
+            value={filters.keyword || ""}
+            onChange={(e) =>
+              setFilters((prev) => ({ ...prev, keyword: e.target.value }))
+            }
+            className=" bg-white pl-10 pr-8 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 w-full"
+          />
+          {filters.keyword && (
+            <IoClose
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+              onClick={() => setFilters((prev) => ({ ...prev, keyword: "" }))}
+            />
+          )}
+        </div>
+
         <button
           onClick={() => setIsFiltersModalOpen(true)}
-          className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 border px-3 py-2 rounded-md text-sm font-medium cursor-pointer"
+          className="bg-white flex items-center gap-2 bg-gray-100 hover:bg-gray-200 border border-gray-300 py-3 px-3 rounded-md text-sm font-medium cursor-pointer"
         >
-          <IoFilterSharp />
-          Filters
+          <LuFilter />
         </button>
 
+        {(filters.status.length > 0 ||
+          filters.company.length > 0 ||
+          filters.role.length > 0 ||
+          filters.dateFrom ||
+          filters.dateTo) && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.2 }}
+            onClick={handleClearFilters}
+            className="flex items-center gap-1 px-3 py-1 rounded-full text-sm border font-medium cursor-pointer bg-gray-200 text-gray-600 hover:bg-gray-300"
+          >
+            Clear All <IoClose className="text-xs" />
+          </motion.button>
+        )}
+      </div>
+
+      {/* Chips */}
+      <div className="flex flex-wrap gap-2 mb-4 items-center">
         <AnimatePresence>
-          {[...filters.status, ...filters.company, ...filters.role].map((val) => {
-            const type =
-              filters.status.includes(val)
-                ? "status"
-                : filters.company.includes(val)
-                ? "company"
-                : "role";
+          {visibleChips.map((val) => {
+            const type = filters.status.includes(val)
+              ? "status"
+              : filters.company.includes(val)
+              ? "company"
+              : "role";
             return (
               <motion.button
                 key={type + val}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.1 }}
-                className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm border cursor-pointer font-medium transition ${getChipColorClass(val, type)}`}
+                transition={{ duration: 0.2 }}
+                className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs border cursor-pointer font-medium transition ${getChipColorClass(
+                  val,
+                  type
+                )}`}
                 onClick={() => removeFilter(type, val)}
               >
-                {val} <IoClose className="text-sm" />
+                {val} <IoClose className="text-xs" />
               </motion.button>
             );
           })}
         </AnimatePresence>
 
-        {(filters.status.length > 0 ||
-  filters.company.length > 0 ||
-  filters.role.length > 0 ||
-  filters.dateFrom ||
-  filters.dateTo) && (
-  <motion.button
-    initial={{ opacity: 0, scale: 0.9 }}
-    animate={{ opacity: 1, scale: 1 }}
-    exit={{ opacity: 0, scale: 0.8 }}
-    transition={{ duration: 0.2 }}
-    onClick={handleClearFilters}
-    className="flex items-center gap-1 px-3 py-1 rounded-full text-sm border font-medium cursor-pointer bg-gray-200 text-gray-600 hover:bg-gray-300"
-  >
-    Clear All <IoClose className="text-sm" />
-  </motion.button>
-)}
+        {chips.length > 4 && (
+          <button
+            onClick={() => setShowAllChips(!showAllChips)}
+            className="text-sm text-blue-400 hover:underline cursor-pointer"
+          >
+            {showAllChips ? "Show Less" : `+${chips.length - 4} more`}
+          </button>
+        )}
       </div>
 
+     
       {/* Filters Modal */}
       {isFiltersModalOpen && (
         <FiltersModal
@@ -178,6 +222,7 @@ const Home = () => {
         />
       )}
 
+
       {/* Edit Modal */}
       <EditJob
         isOpen={isModalOpen}
@@ -185,6 +230,11 @@ const Home = () => {
         jobData={editingJob}
         onUpdate={handleEditSubmit}
       />
+
+      {/* Job Count */}
+<div className="mb-2 mx-1 text-sm text-gray-600 font-semibold">
+  Showing {filteredJobs.length} job{filteredJobs.length !== 1 && "s"}
+</div>
 
       {/* Table */}
       <JobTable

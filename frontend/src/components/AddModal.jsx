@@ -59,9 +59,9 @@ function AddModal({ isOpen, onClose }) {
           <button
             type="button"
             onClick={onClose}
-            className="text-gray-400 cursor-pointer rounded-lg text-sm w-8 h-8 flex items-center justify-center"
+            className="text-gray-400 cursor-pointer rounded-lg text-md w-8 h-8 flex items-center justify-center hover:text-gray-600"
           >
-            <IoCloseOutline className="text-xl" />
+            <IoCloseOutline className="text-2xl" />
           </button>
         </div>
 
@@ -79,7 +79,7 @@ function AddModal({ isOpen, onClose }) {
                 value={formData.company}
                 onChange={handleChange}
                 required
-                className="w-full p-2.5 text-sm rounded-lg border bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+                className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
               />
             </div>
 
@@ -94,7 +94,7 @@ function AddModal({ isOpen, onClose }) {
                 value={formData.role}
                 onChange={handleChange}
                 required
-                className="w-full p-2.5 text-sm rounded-lg border bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+                className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
               />
             </div>
 
@@ -107,7 +107,7 @@ function AddModal({ isOpen, onClose }) {
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
-                className="w-full p-2.5 text-sm rounded-lg border bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+                className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
               >
                 <option value="Applied">Applied</option>
                 <option value="Interview">Interview</option>
@@ -127,7 +127,7 @@ function AddModal({ isOpen, onClose }) {
                 value={formData.applicationDate}
                 onChange={handleChange}
                 required
-                className="w-full p-2.5 text-sm rounded-lg border bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+                className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
               />
             </div>
 
@@ -141,7 +141,7 @@ function AddModal({ isOpen, onClose }) {
                 name="link"
                 value={formData.link}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring"
+                className="w-full px-4 py-2 border border-gray-300 bg-gray-50 focus:ring-2 focus:outline-none focus:ring-blue-200 rounded-lg focus:outline-none focus:ring"
               />
             </div>
           </div>
@@ -155,7 +155,7 @@ function AddModal({ isOpen, onClose }) {
               name="notes"
               value={formData.notes}
               onChange={handleChange}
-              className="w-full p-2.5 rounded-lg border bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+              className="w-full p-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
             />
           </div>
 
@@ -169,7 +169,7 @@ function AddModal({ isOpen, onClose }) {
               name="resume"
               value={formData.resume}
               onChange={handleChange}
-              className="w-full p-2.5 rounded-lg border bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+              className="w-full p-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
             />
           </div>
 

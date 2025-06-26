@@ -83,15 +83,20 @@ const FiltersModal = ({ filters, setFilters, onClose, onClear, jobs = [] }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(0,0,0,0.5)] overflow-auto">
-      <div className="relative bg-white rounded-lg shadow-lg p-8 w-full max-w-xl space-y-6">
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 text-gray-500 hover:text-black text-2xl cursor-pointer"
-        >
-          <IoCloseOutline />
-        </button>
-
-        <h2 className="text-2xl font-semibold border-b border-gray-300 pb-4">Advanced Filters</h2>
+      <div className="relative bg-white rounded-lg shadow-lg p-6 w-full max-w-xl space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 border-b dark:border-gray-600">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            Advanced Filters
+          </h3>
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-gray-400 cursor-pointer rounded-lg text-md w-8 h-8 flex items-center justify-center hover:text-gray-600"
+          >
+            <IoCloseOutline className="text-2xl " />
+          </button>
+        </div>
 
         {/* Status Checkboxes */}
         <div className="border-b border-gray-300 pb-4">
