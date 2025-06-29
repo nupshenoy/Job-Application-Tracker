@@ -1,70 +1,43 @@
-// FiltersModal.jsx
 import React, { useState, useEffect } from "react";
 import { IoCloseOutline } from "react-icons/io5";
+import MultiSelectAccordion from "./MultiselectAccordion";
 
-const FiltersModal = ({ filters, setFilters, onClose, onClear, jobs = [] }) => {
-  const statuses = ["Applied", "Interview", "Offer", "Rejected"];
+const statusOptions = ["Applied", "Interview", "Offer", "Rejected"];
+const jobTypeOptions = ["Remote", "Hybrid", "On-site"];
+// jobTypeOptions.unshift("");
 
-  const normalize = (arr) => {
+const FiltersModal = ({ jobs, filters, setFilters, onClose, onClear }) => {
+  const unique = (arr) => {
     const map = new Map();
-    for (const item of arr.filter(Boolean)) {
-      const key = item.toLowerCase();
-      if (!map.has(key)) map.set(key, item);
-    }
+    arr.forEach((x) => {
+      if (!x) return;
+      const key = x.toLowerCase();
+      if (!map.has(key)) map.set(key, x);
+    });
     return [...map.values()];
   };
+  const companies = unique(jobs.map((j) => j.company));
+  const roles = unique(jobs.map((j) => j.role));
+  const locations = unique(jobs.map((j) => j.location));
 
-  const allCompanies = normalize(jobs.map((j) => j.company));
-  const allRoles = normalize(jobs.map((j) => j.role));
+  //keep local draft so user can cancel (Local Filters)
+  const [draft, setDraft] = useState(filters);
+  useEffect(() => setDraft(filters), [filters]);
 
-  const [localFilters, setLocalFilters] = useState(filters);
-  const [showCompanyList, setShowCompanyList] = useState(false);
-  const [showRoleList, setShowRoleList] = useState(false);
-
-  useEffect(() => {
-    setLocalFilters(filters);
-  }, [filters]);
-
-  const toggleStatus = (status) => {
-    setLocalFilters((prev) => ({
-      ...prev,
-      status: prev.status.includes(status)
-        ? prev.status.filter((s) => s !== status)
-        : [...prev.status, status],
+  const toggleArrVal = (key, val) =>
+    setDraft((p) => ({
+      ...p,
+      [key]: p[key].includes(val)
+        ? p[key].filter((v) => v !== val)
+        : [...p[key], val],
     }));
-  };
 
-  const toggleCompany = (company) => {
-    setLocalFilters((prev) => ({
-      ...prev,
-      company: prev.company.includes(company)
-        ? prev.company.filter((c) => c.toLowerCase() !== company.toLowerCase())
-        : [...prev.company, company],
-    }));
-  };
-
-  const toggleRole = (role) => {
-    setLocalFilters((prev) => ({
-      ...prev,
-      role: prev.role.includes(role)
-        ? prev.role.filter((r) => r.toLowerCase() !== role.toLowerCase())
-        : [...prev.role, role],
-    }));
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setLocalFilters((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleApply = () => {
-    setFilters(localFilters);
-    onClose();
-  };
+  const handleRange = (e) =>
+    setDraft({ ...draft, [e.target.name]: e.target.value });
 
   const getStatusClasses = (status) => {
     const base = "px-3 py-1 rounded border text-sm cursor-pointer";
-    const selected = localFilters.status.includes(status);
+    const selected = draft.status.includes(status);
 
     const colorMap = {
       Applied: "bg-blue-600 text-white border-blue-600",
@@ -82,133 +55,151 @@ const FiltersModal = ({ filters, setFilters, onClose, onClear, jobs = [] }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(0,0,0,0.5)] overflow-auto">
-      <div className="relative bg-white rounded-lg shadow-lg p-6 w-full max-w-xl space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b dark:border-gray-600">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Advanced Filters
-          </h3>
-          <button
-            type="button"
-            onClick={onClose}
-            className="text-gray-400 cursor-pointer rounded-lg text-md w-8 h-8 flex items-center justify-center hover:text-gray-600"
-          >
-            <IoCloseOutline className="text-2xl " />
-          </button>
-        </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 overflow-auto">
+      <div className="relative bg-white rounded-lg shadow-lg w-full max-w-xl p-6 space-y-6">
+        {/* close */}
+        <button
+          onClick={onClose}
+          className="absolute right-3 top-3 text-2xl text-gray-500 hover:text-black cursor-pointer"
+        >
+          <IoCloseOutline />
+        </button>
 
-        {/* Status Checkboxes */}
+        <h2 className="text-2xl font-semibold border-b pb-3">
+          Advanced Filters
+        </h2>
+
+        {/* STATUS */}
         <div className="border-b border-gray-300 pb-4">
           <p className="font-medium mb-2">Status</p>
-          <div className="flex flex-wrap gap-4">
-            {statuses.map((status) => (
+          <div className="flex flex-wrap gap-2">
+            {statusOptions.map((s) => (
               <button
-                key={status}
-                onClick={() => toggleStatus(status)}
-                className={getStatusClasses(status)}
+                key={s}
+                onClick={() => toggleArrVal("status", s)}
+                className={getStatusClasses(s)}
               >
-                {status}
+                {s}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Companies Accordion */}
-        <div className="border-b border-gray-300 pb-4">
-          <button
-            onClick={() => setShowCompanyList(!showCompanyList)}
-            className="font-medium mb-2 text-left w-full cursor-pointer"
-          >
-            {showCompanyList ? "▼ Companies" : "▶ Companies"}
-          </button>
-          {showCompanyList && (
-            <div className="pl-4 space-y-2 max-h-40 overflow-y-auto border-l">
-              {allCompanies.map((company) => (
-                <button
-                  key={company}
-                  onClick={() => toggleCompany(company)}
-                  className={`block w-full text-left px-3 py-1 rounded text-sm cursor-pointer ${
-                    localFilters.company.some(
-                      (c) => c.toLowerCase() === company.toLowerCase()
-                    )
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-100 text-gray-800"
-                  }`}
-                >
-                  {company}
-                </button>
-              ))}
-            </div>
-          )}
+        {/* JOB TYPE */}
+        <div className="border-b border-gray-300  pb-4">
+          <p className="font-medium mb-2">Job Type</p>
+          <div className="flex flex-wrap gap-2">
+            {jobTypeOptions.map((jt) => (
+              <button
+                key={jt || "unspecified"}
+                onClick={() => toggleArrVal("jobType", jt)}
+                className={`cursor-pointer px-3 py-1 rounded border text-sm ${
+                  draft.jobType.includes(jt)
+                    ? "bg-teal-600 text-white border-teal-600"
+                    : "bg-gray-100 text-gray-700 border-gray-300"
+                }`}
+              >
+                {jt || "Unspecified"}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Roles Accordion */}
-        <div className="border-b border-gray-300 pb-4">
-          <button
-            onClick={() => setShowRoleList(!showRoleList)}
-            className="font-medium mb-2 text-left w-full cursor-pointer"
-          >
-            {showRoleList ? "▼ Roles" : "▶ Roles"}
-          </button>
-          {showRoleList && (
-            <div className="pl-4 space-y-2 max-h-40 overflow-y-auto border-l">
-              {allRoles.map((role) => (
-                <button
-                  key={role}
-                  onClick={() => toggleRole(role)}
-                  className={`block w-full text-left px-3 py-1 rounded text-sm cursor-pointer ${
-                    localFilters.role.some(
-                      (r) => r.toLowerCase() === role.toLowerCase()
-                    )
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-100 text-gray-800"
-                  }`}
-                >
-                  {role}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+        {/* COMPANY / ROLE / LOCATION lists */}
+        <MultiSelectAccordion
+          label="Companies"
+          list={companies}
+          filterKey="company"
+          selected={draft.company}
+          onToggleItem={toggleArrVal}
+        />
 
-        {/* Date Range */}
-        <div className="flex gap-6">
-          <div className="flex-1">
-            <label className="block mb-1 font-medium">From</label>
+        <MultiSelectAccordion
+          label="Roles"
+          list={roles}
+          filterKey="role"
+          selected={draft.role}
+          onToggleItem={toggleArrVal}
+        />
+
+        <MultiSelectAccordion
+          label="Locations"
+          list={locations}
+          filterKey="location"
+          selected={draft.location}
+          onToggleItem={toggleArrVal}
+        />
+
+        {/* DATE RANGE */}
+        <div className="grid grid-cols-2 gap-4  pt-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">From</label>
             <input
               type="date"
               name="dateFrom"
-              value={localFilters.dateFrom}
-              onChange={handleInputChange}
-              className="w-full p-3 border rounded"
+              value={draft.dateFrom}
+              onChange={handleRange}
+              className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
             />
           </div>
-          <div className="flex-1">
-            <label className="block mb-1 font-medium">To</label>
+          <div>
+            <label className="block text-sm font-medium mb-1">To</label>
             <input
               type="date"
               name="dateTo"
-              value={localFilters.dateTo}
-              onChange={handleInputChange}
-              className="w-full p-3 border rounded"
+              value={draft.dateTo}
+              onChange={handleRange}
+              className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
             />
           </div>
         </div>
 
-        {/* Actions */}
-        <div className="flex justify-between pt-6">
+        {/* SALARY RANGE */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Min Salary</label>
+            <input
+              type="number"
+              name="salaryMin"
+              value={draft.salaryMin}
+              onChange={(e) =>
+                setDraft((p) => ({ ...p, salaryMin: e.target.value }))
+              }
+              className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+              placeholder="e.g. 50000"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Max Salary</label>
+            <input
+              type="number"
+              name="salaryMax"
+              value={draft.salaryMax}
+              onChange={(e) =>
+                setDraft((p) => ({ ...p, salaryMax: e.target.value }))
+              }
+              className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+              placeholder="e.g. 200000"
+            />
+          </div>
+        </div>
+
+        {/* ACTIONS */}
+        <div className="flex justify-between pt-4">
           <button
             onClick={onClear}
-            className="bg-gray-100 text-black px-5 py-2 rounded hover:bg-gray-200 cursor-pointer"
+            className="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded cursor-pointer"
           >
-            Clear All
+            Clear
           </button>
           <button
-            onClick={handleApply}
-            className="bg-black text-white px-5 py-2 rounded hover:bg-gray-800 cursor-pointer"
+            onClick={() => {
+              setFilters(draft);
+              onClose();
+            }}
+            className="bg-black text-white hover:bg-gray-800 px-4 py-2 rounded cursor-pointer"
           >
-            Apply Filters
+            Apply
           </button>
         </div>
       </div>

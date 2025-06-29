@@ -12,6 +12,9 @@ const EditJob = ({ isOpen, onClose, jobData }) => {
     link: "",
     notes: "",
     resume: "",
+    salary: "",
+    location: "",
+    jobType: "Unspecified",
   });
 
   useEffect(() => {
@@ -24,15 +27,16 @@ const EditJob = ({ isOpen, onClose, jobData }) => {
         link: jobData.link || "",
         notes: jobData.notes || "",
         resume: jobData.resume || "",
+        salary: jobData.salary || "",
+        location: jobData.location || "",
+        jobType: jobData.jobType || "",
       });
     }
   }, [jobData]);
 
   const handleChange = (e) => {
-    setForm((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -41,9 +45,9 @@ const EditJob = ({ isOpen, onClose, jobData }) => {
     try {
       await updateJob(jobData._id, form);
       onClose();
-    } catch (error) {
-      console.error("Error updating job:", error);
-      alert("Failed to update job. Please try again.");
+    } catch (err) {
+      console.error("Error updating job:", err);
+      alert("Failed to update job.");
     }
   };
 
@@ -51,63 +55,50 @@ const EditJob = ({ isOpen, onClose, jobData }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(0,0,0,0.5)]">
-      <div className="relative p-4 w-full max-w-2xl bg-white rounded-lg shadow dark:bg-gray-700">
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b dark:border-gray-600">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Edit Job Application
-          </h3>
+      <div className="relative p-4 w-full max-w-2xl bg-white rounded-lg shadow">
+        <div className="flex items-center justify-between p-4 border-b">
+          <h3 className="text-lg font-semibold text-gray-900">Edit Job</h3>
           <button
             type="button"
             onClick={onClose}
-            className="text-gray-400 cursor-pointer rounded-lg text-sm w-8 h-8 flex items-center justify-center"
+            className="text-gray-400 rounded-lg text-sm w-8 h-8 flex items-center justify-center"
           >
-            <span className="text-xl">
-              <IoCloseOutline />
-            </span>
+            <IoCloseOutline className="text-xl" />
           </button>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="p-4">
           <div className="grid gap-4 mb-4 grid-cols-2">
-            <div className="col-span-1">
-              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Company Name <span className="text-red-700">*</span>
-              </label>
+            <div>
+              <label className="block mb-1 text-sm font-medium">Company *</label>
               <input
                 type="text"
                 name="company"
                 value={form.company}
                 onChange={handleChange}
                 required
-                className="w-full p-2.5 text-sm rounded-lg border bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+                className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
               />
             </div>
-
-            <div className="col-span-1">
-              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Job Title <span className="text-red-700">*</span>
-              </label>
+            <div>
+              <label className="block mb-1 text-sm font-medium">Role *</label>
               <input
                 type="text"
                 name="role"
                 value={form.role}
                 onChange={handleChange}
                 required
-                className="w-full p-2.5 text-sm rounded-lg border bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+                className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
               />
             </div>
 
-            <div className="col-span-1">
-              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Status <span className="text-red-700">*</span>
-              </label>
+            <div>
+              <label className="block mb-1 text-sm font-medium">Status *</label>
               <select
                 name="status"
                 value={form.status}
                 onChange={handleChange}
-                className="w-full p-2.5 text-sm rounded-lg border bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+               className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
               >
                 <option value="Applied">Applied</option>
                 <option value="Interview">Interview</option>
@@ -115,75 +106,100 @@ const EditJob = ({ isOpen, onClose, jobData }) => {
                 <option value="Rejected">Rejected</option>
               </select>
             </div>
-
-            <div className="col-span-1">
-              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Application Date <span className="text-red-700">*</span>
-              </label>
+            <div>
+              <label className="block mb-1 text-sm font-medium">Application Date *</label>
               <input
                 type="date"
                 name="applicationDate"
                 value={form.applicationDate}
                 onChange={handleChange}
                 required
-                className="w-full p-2.5 text-sm rounded-lg border bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+                className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
               />
             </div>
 
-            <div className="col-span-2">
-              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Application Link
-              </label>
+            <div>
+              <label className="block mb-1 text-sm font-medium">Location</label>
+              <input
+                type="text"
+                name="location"
+                value={form.location}
+                onChange={handleChange}
+                className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+              />
+            </div>
+            <div>
+              <label className="block mb-1 text-sm font-medium">Salary</label>
+              <input
+                type="text"
+                name="salary"
+                value={form.salary}
+                onChange={handleChange}
+                placeholder="e.g. 12 LPA / $100k"
+                className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+              />
+            </div>
+
+            <div>
+              <label className="block mb-1 text-sm font-medium">Job Type</label>
+              <select
+                name="jobType"
+                value={form.jobType}
+                onChange={handleChange}
+                className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+              >
+                <option value="Unspecified">— Unspecified —</option>
+                <option value="Remote">Remote</option>
+                <option value="Hybrid">Hybrid</option>
+                <option value="On-site">On-site</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block mb-1 text-sm font-medium">Resume Link</label>
               <input
                 type="url"
-                name="link"
-                value={form.link}
+                name="resume"
+                value={form.resume}
                 onChange={handleChange}
-                placeholder="Application URL"
-                className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+                className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
               />
             </div>
           </div>
 
-          <div className="col-span-2">
-            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Notes
-            </label>
+          <div className="mb-4">
+            <label className="block mb-1 text-sm font-medium">Application Link</label>
+            <input
+              type="url"
+              name="link"
+              value={form.link}
+              onChange={handleChange}
+             className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block mb-1 text-sm font-medium">Notes</label>
             <textarea
               name="notes"
               value={form.notes}
               onChange={handleChange}
-              placeholder="Additional notes"
               rows={3}
-              className="w-full p-2.5 rounded-lg border bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+              className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
             />
           </div>
 
-          <div className="col-span-2 mt-4">
-            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Resume Link
-            </label>
-            <input
-              type="url"
-              name="resume"
-              value={form.resume}
-              onChange={handleChange}
-              placeholder="Resume URL"
-              className="w-full p-2.5 rounded-lg border bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
-            />
-          </div>
-
-          <div className="flex justify-end gap-3 mt-4">
+          <div className="flex justify-end gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="bg-gray-100 text-black px-4 py-2 rounded-md cursor-pointer hover:bg-gray-300"
+              className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="bg-black text-white px-4 py-2 rounded-md cursor-pointer hover:bg-gray-100 hover:text-black"
+              className="px-4 py-2 bg-black text-white hover:bg-gray-900 rounded-md cursor-pointer"
             >
               Save Changes
             </button>

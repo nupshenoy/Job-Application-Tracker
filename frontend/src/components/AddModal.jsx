@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { IoCloseOutline } from "react-icons/io5";
-import { useJobs } from "../context/JobContext"; // Import context
+import { useJobs } from "../context/JobContext";
 
 function AddModal({ isOpen, onClose }) {
-  const { addJob } = useJobs(); // Use addJob from context
+  const { addJob } = useJobs();
 
   const [formData, setFormData] = useState({
     company: "",
@@ -13,6 +13,9 @@ function AddModal({ isOpen, onClose }) {
     link: "",
     notes: "",
     resume: "",
+    salary: "",
+    location: "",
+    jobType: "",
   });
 
   const handleChange = (e) => {
@@ -22,14 +25,15 @@ function AddModal({ isOpen, onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const { company, role, applicationDate } = formData;
 
-    if (!formData.company || !formData.role || !formData.applicationDate) {
+    if (!company || !role || !applicationDate) {
       alert("Please fill in all required fields.");
       return;
     }
 
     try {
-      await addJob(formData); // Use context function
+      await addJob(formData);
       setFormData({
         company: "",
         role: "",
@@ -38,6 +42,9 @@ function AddModal({ isOpen, onClose }) {
         link: "",
         notes: "",
         resume: "",
+        salary: "",
+        location: "",
+        jobType: "Unspecified",
       });
       onClose();
     } catch (error) {
@@ -53,13 +60,11 @@ function AddModal({ isOpen, onClose }) {
       <div className="relative p-4 w-full max-w-2xl bg-white rounded-lg shadow dark:bg-gray-700">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b dark:border-gray-600">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Add Job Application
-          </h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Add Job Application</h3>
           <button
             type="button"
             onClick={onClose}
-            className="text-gray-400 cursor-pointer rounded-lg text-md w-8 h-8 flex items-center justify-center hover:text-gray-600"
+            className="text-gray-400 hover:text-gray-600 rounded-lg text-md w-8 h-8 flex items-center justify-center cursor-pointer"
           >
             <IoCloseOutline className="text-2xl" />
           </button>
@@ -68,11 +73,8 @@ function AddModal({ isOpen, onClose }) {
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-4">
           <div className="grid gap-4 mb-4 grid-cols-2">
-            {/* Company */}
-            <div className="col-span-1">
-              <label htmlFor="company" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Company Name <span className="text-red-700">*</span>
-              </label>
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Company <span className="text-red-500">*</span></label>
               <input
                 type="text"
                 name="company"
@@ -83,11 +85,8 @@ function AddModal({ isOpen, onClose }) {
               />
             </div>
 
-            {/* Role */}
-            <div className="col-span-2 sm:col-span-1">
-              <label htmlFor="role" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Job Title <span className="text-red-700">*</span>
-              </label>
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Job Title <span className="text-red-500">*</span></label>
               <input
                 type="text"
                 name="role"
@@ -98,11 +97,8 @@ function AddModal({ isOpen, onClose }) {
               />
             </div>
 
-            {/* Status */}
-            <div className="col-span-1">
-              <label htmlFor="status" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Status <span className="text-red-700">*</span>
-              </label>
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status <span className="text-red-500">*</span></label>
               <select
                 name="status"
                 value={formData.status}
@@ -116,11 +112,8 @@ function AddModal({ isOpen, onClose }) {
               </select>
             </div>
 
-            {/* Date */}
-            <div className="col-span-1">
-              <label htmlFor="applicationDate" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Application Date <span className="text-red-700">*</span>
-              </label>
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Application Date <span className="text-red-500">*</span></label>
               <input
                 type="date"
                 name="applicationDate"
@@ -131,49 +124,78 @@ function AddModal({ isOpen, onClose }) {
               />
             </div>
 
-            {/* Link */}
-            <div className="col-span-2">
-              <label htmlFor="link" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Application Link
-              </label>
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Location</label>
+              <input
+                type="text"
+                name="location"
+                value={formData.location}
+                onChange={handleChange}
+                className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+              />
+            </div>
+
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Salary</label>
+              <input
+                type="text"
+                name="salary"
+                value={formData.salary}
+                onChange={handleChange}
+                placeholder="e.g. $100k or 12 LPA"
+                className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+              />
+            </div>
+
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Job Type</label>
+              <select
+                name="jobType"
+                value={formData.jobType}
+                onChange={handleChange}
+                className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+              >
+                <option value="Unspecified">— Unspecified —</option>
+                <option value="Remote">Remote</option>
+                <option value="Hybrid">Hybrid</option>
+                <option value="On-site">On-site</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Resume Link</label>
               <input
                 type="url"
-                name="link"
-                value={formData.link}
+                name="resume"
+                value={formData.resume}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 bg-gray-50 focus:ring-2 focus:outline-none focus:ring-blue-200 rounded-lg focus:outline-none focus:ring"
+                className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
               />
             </div>
           </div>
 
-          {/* Notes */}
-          <div className="col-span-2 mb-4">
-            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Notes
-            </label>
+          <div className="mb-4">
+            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Application Link</label>
+            <input
+              type="url"
+              name="link"
+              value={formData.link}
+              onChange={handleChange}
+              className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Notes</label>
             <textarea
               name="notes"
               value={formData.notes}
               onChange={handleChange}
-              className="w-full p-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+              rows={3}
+              className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
             />
           </div>
 
-          {/* Resume */}
-          <div className="col-span-2 mb-4">
-            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Resume Link
-            </label>
-            <input
-              type="url"
-              name="resume"
-              value={formData.resume}
-              onChange={handleChange}
-              className="w-full p-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
-            />
-          </div>
-
-          {/* Buttons */}
           <div className="flex justify-end gap-3 mt-4">
             <button
               type="button"

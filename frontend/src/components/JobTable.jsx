@@ -22,6 +22,9 @@ const JobTable = ({
             <tr>
               <th className="px-6 py-3">Company</th>
               <th className="px-6 py-3">Role</th>
+              <th className="px-6 py-3">Salary</th>
+              <th className="px-6 py-3">Location</th>
+              <th className="px-6 py-3">Job Type</th>
               <th className="px-6 py-3">Status</th>
               <th className="px-6 py-3">Application Date</th>
               <th className="px-6 py-3">Link</th>
@@ -42,6 +45,15 @@ const JobTable = ({
                   </td>
                   <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                     {job.role}
+                  </td>
+                  <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
+                    {job.salary}
+                  </td>
+                  <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
+                    {job.location}
+                  </td>
+                  <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
+                    {job.jobType}
                   </td>
                   <td className="px-6 py-4 font-medium text-gray-900">
                     <select
@@ -117,7 +129,7 @@ const JobTable = ({
               ))
             ) : (
               <tr>
-                <td colSpan="8" className="text-center py-4">
+                <td colSpan="11" className="text-center py-4">
                   No job data available.
                 </td>
               </tr>

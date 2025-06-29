@@ -14,7 +14,10 @@ const jobSchema = new mongoose.Schema({
   link: { type: String },
   applicationDate: { type: Date, default: Date.now },
   notes: { type: String },
-  resume: { type: String }
+  resume: { type: String },
+  salary: Number,
+  location: String,
+  jobType: { type: String, enum: ['', 'Remote', 'Hybrid', 'On-site'], default: "",}
 }, { timestamps: true });
 
 
