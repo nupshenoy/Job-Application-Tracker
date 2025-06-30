@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useJobs } from "../context/JobContext";
 import AddModal from "./AddModal";
 import { useAuth } from "../context/AuthContext";
+import { IoLogoBuffer } from "react-icons/io5";
 
 const Navbar = () => {
   const [showAddModal, setShowAddModal] = useState(false);
@@ -30,7 +31,10 @@ const Navbar = () => {
         <div className="container mx-auto ">
           <div className="flex justify-between items-center">
             <NavLink to="/dashboard">
-              <h1 className="text-3xl font-bold">Job Application Tracker</h1>
+            
+              <div className="text-3xl font-bold flex items-center gap-2">
+                <IoLogoBuffer />
+                Job Application Tracker</div>
             </NavLink>
 
             {isAuthenticated && (
@@ -54,7 +58,7 @@ const Navbar = () => {
             )}
           </div>
           {isAuthenticated && (
-            <p className="text-gray-600 mt-2">
+            <p className="text-gray-600 mt-2 pl-10">
               Welcome back, {user?.name || "User"}!
             </p>
           )}
