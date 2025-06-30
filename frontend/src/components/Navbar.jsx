@@ -17,7 +17,7 @@ const Navbar = () => {
 
   const handleSignOut = () => {
     logout(); // Clears token & user from context and localStorage
-    navigate("/login");
+    navigate("/");
   };
 
   const handleAddSuccess = async () => {
@@ -30,12 +30,12 @@ const Navbar = () => {
       <div className="shadow-xl pb-2 pt-6 z-10 bg-white">
         <div className="container mx-auto ">
           <div className="flex justify-between items-center">
-            <NavLink to="/dashboard">
-            
+            <NavLink to="/">            
               <div className="text-3xl font-bold flex items-center gap-2">
                 <IoLogoBuffer />
                 Job Application Tracker</div>
             </NavLink>
+            
 
             {isAuthenticated && (
               <div className="flex gap-3">
@@ -57,6 +57,9 @@ const Navbar = () => {
               </div>
             )}
           </div>
+          {!isAuthenticated &&(
+              <div className="mb-4"></div>
+            )}
           {isAuthenticated && (
             <p className="text-gray-600 mt-2 pl-10">
               Welcome back, {user?.name || "User"}!

@@ -1,10 +1,9 @@
-import Navbar from "./components/Navbar";
+
 import { Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
-import Footer from "./components/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout";
 import RedirectIfLoggedIn from "./components/RedirectIfLoggedIn";
