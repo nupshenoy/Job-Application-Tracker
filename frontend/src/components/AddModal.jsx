@@ -225,13 +225,13 @@ function AddModal({ isOpen, onClose }) {
             <button
               type="button"
               onClick={onClose}
-              className="bg-gray-100 text-black px-4 py-2 rounded-md hover:bg-gray-300 cursor-pointer"
+              className="bg-gray-100 text-black px-4 py-2 rounded-md hover:bg-gray-300 cursor-pointer transition"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-100 hover:text-black cursor-pointer"
+              className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-300 hover:text-black cursor-pointer transition"
             >
               Submit
             </button>

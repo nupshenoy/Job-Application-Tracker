@@ -63,14 +63,14 @@ const EditModal = ({ isOpen, onClose, jobData }) => {
             onClick={onClose}
             className="text-gray-400 rounded-lg text-sm w-8 h-8 flex items-center justify-center"
           >
-            <IoCloseOutline className="text-xl" />
+            <IoCloseOutline className="text-xl cursor-pointer" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-4">
           <div className="grid gap-4 mb-4 grid-cols-2">
             <div>
-              <label className="block mb-1 text-sm font-medium">Company *</label>
+              <label className="block mb-1 text-sm font-medium">Company <span className="text-red-500">*</span></label>
               <input
                 type="text"
                 name="company"
@@ -81,7 +81,7 @@ const EditModal = ({ isOpen, onClose, jobData }) => {
               />
             </div>
             <div>
-              <label className="block mb-1 text-sm font-medium">Role *</label>
+              <label className="block mb-1 text-sm font-medium">Role <span className="text-red-500">*</span></label>
               <input
                 type="text"
                 name="role"
@@ -93,7 +93,7 @@ const EditModal = ({ isOpen, onClose, jobData }) => {
             </div>
 
             <div>
-              <label className="block mb-1 text-sm font-medium">Status *</label>
+              <label className="block mb-1 text-sm font-medium">Status <span className="text-red-500">*</span></label>
               <select
                 name="status"
                 value={form.status}
@@ -107,7 +107,7 @@ const EditModal = ({ isOpen, onClose, jobData }) => {
               </select>
             </div>
             <div>
-              <label className="block mb-1 text-sm font-medium">Application Date *</label>
+              <label className="block mb-1 text-sm font-medium">Application Date <span className="text-red-500">*</span></label>
               <input
                 type="date"
                 name="applicationDate"
@@ -193,13 +193,13 @@ const EditModal = ({ isOpen, onClose, jobData }) => {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md cursor-pointer"
+              className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md cursor-pointer transition"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-black text-white hover:bg-gray-900 rounded-md cursor-pointer"
+              className="px-4 py-2 bg-black text-white hover:bg-gray-300 hover:text-black rounded-md cursor-pointer transition"
             >
               Save Changes
             </button>
