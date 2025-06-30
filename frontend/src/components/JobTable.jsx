@@ -3,6 +3,7 @@ import { MdEdit } from "react-icons/md";
 import { FaTrashAlt } from "react-icons/fa";
 import { useJobs } from "../context/JobContext";
 import Pagination from "./Pagination";
+import { TbBuilding } from "react-icons/tb";
 
 const JobTable = ({
   jobs,
@@ -11,6 +12,7 @@ const JobTable = ({
   currentPage,
   totalPages,
   onPageChange,
+  getJobTypeClass,
 }) => {
   const { deleteJob, updateJobStatus } = useJobs(); // Pull context data
 
@@ -18,7 +20,7 @@ const JobTable = ({
     <div className="overflow-x-auto shadow-lg rounded-lg border border-gray-200 overflow-hidden bg-white">
       <div className="max-h-[600px] overflow-y-auto">
         <table className="w-full text-sm text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 text-left dark:bg-gray-700 dark:text-gray-400">
+          <thead className="sticky top-0 shadow-sm z-10 text-xs text-gray-700 uppercase bg-gray-50 text-left dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th className="px-6 py-3">Company</th>
               <th className="px-6 py-3">Role</th>
@@ -38,32 +40,42 @@ const JobTable = ({
               jobs.map((job) => (
                 <tr
                   key={job._id}
-                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"
+                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 transition hover:shadow-sm hover:scale-[1.01] hover:bg-gray-50"
                 >
-                  <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    {job.company}
+                  <td className="px-6 py-6 font-medium text-gray-900 whitespace-nowrap dark:text-white flex items-center gap-1">
+                    <TbBuilding />
+                    <span>{job.company}</span>
                   </td>
-                  <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
+                  <td className="px-6 py-4 font-sm text-gray-900 dark:text-white">
                     {job.role}
                   </td>
-                  <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
-                    {job.salary}
+                  <td className="px-6 py-4 font-sm text-gray-900 dark:text-white">
+                    {job.salary || '-'}
                   </td>
                   <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
-                    {job.location}
+                    <span
+                      className={`px-2 py-1 rounded-lg text-xs ${getJobTypeClass(
+                        job.jobType
+                      )}`}
+                    >
+                      {job.jobType || "-"}
+                    </span>
                   </td>
-                  <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
-                    {job.jobType}
+                  <td className="px-6 py-4 font-sm text-gray-900 dark:text-white">
+                    {job.location ||'-'}
                   </td>
                   <td className="px-6 py-4 font-medium text-gray-900">
                     <select
                       value={job.status}
                       onChange={(e) => updateJobStatus(job._id, e.target.value)} // direct call
-                      className={`text-white cursor-pointer border border-gray-300 rounded-2xl px-2 py-1 ${getStatusClass(
+                      className={`text-white cursor-pointer border border-gray-300 rounded-2xl px-2 py-1 focus:ring focus:ring-blue-200 focus:outline-none ${getStatusClass(
                         job.status
                       )}`}
                     >
-                      <option value="Applied" className="bg-pink-500">
+                      <option
+                        value="Applied"
+                        className="bg-pink-500 focus:ring focus:ring-blue-100"
+                      >
                         Applied
                       </option>
                       <option value="Interview" className="bg-yellow-500">
@@ -77,7 +89,7 @@ const JobTable = ({
                       </option>
                     </select>
                   </td>
-                  <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
+                  <td className="px-6 py-4 font-medium text-xs text-gray-900 dark:text-white">
                     {new Date(job.applicationDate).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4 font-medium text-gray-900">
@@ -94,7 +106,7 @@ const JobTable = ({
                       "-"
                     )}
                   </td>
-                  <td className="px-6 py-4 font-medium text-gray-900 dark:text-white max-w-xs break-words">
+                  <td className="px-6 py-4 font-medium text-gray-900 dark:text-white max-w-xs break-words truncate " title={job.notes}>
                     {job.notes || "-"}
                   </td>
                   <td className="px-6 py-4 font-medium text-gray-900">

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 import { useJobs } from "../context/JobContext";
 
-const EditJob = ({ isOpen, onClose, jobData }) => {
+const EditModal = ({ isOpen, onClose, jobData }) => {
   const { updateJob } = useJobs();
   const [form, setForm] = useState({
     company: "",
@@ -210,4 +210,4 @@ const EditJob = ({ isOpen, onClose, jobData }) => {
   );
 };
 
-export default EditJob;
+export default EditModal;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useJobs } from "../context/JobContext";
-import EditJob from "./EditJob";
+import EditModal from "../components/EditModal";
 import JobTable from "../components/JobTable";
 import FiltersModal from "../components/FiltersModal";
 import FilterToolbar from "../components/FilterToolbar";
@@ -52,36 +52,36 @@ const Home = () => {
 
   //  Filtered Jobs
   const jobMatches = (job) => {
-  const f = filters;
-  const kwTokens = f.keyword.toLowerCase().split(/\s+/).filter(Boolean);
+    const f = filters;
+    const kwTokens = f.keyword.toLowerCase().split(/\s+/).filter(Boolean);
 
-  const kwOk =
-    kwTokens.length === 0 ||
-    kwTokens.every((t) =>
-      [job.company, job.role, job.location ?? ""]
-        .join(" ")
-        .toLowerCase()
-        .includes(t)
-    );
+    const kwOk =
+      kwTokens.length === 0 ||
+      kwTokens.every((t) =>
+        [job.company, job.role, job.location ?? ""]
+          .join(" ")
+          .toLowerCase()
+          .includes(t)
+      );
 
-  const checks = [
-    kwOk,
-    f.status.length === 0 || f.status.includes(job.status),
-    f.company.length === 0 ||
-      f.company.some((c) => c.toLowerCase() === job.company.toLowerCase()), // keep OR here
-    f.role.length === 0 ||
-      f.role.some((r) => r.toLowerCase() === job.role.toLowerCase()),
-    f.location.length === 0 ||
-      f.location.some((l) => l.toLowerCase() === job.location?.toLowerCase()),
-    f.jobType.length === 0 || f.jobType.includes(job.jobType),
-    !f.dateFrom || job.applicationDate.slice(0, 10) >= f.dateFrom,
-    !f.dateTo || job.applicationDate.slice(0, 10) <= f.dateTo,
-    f.salaryMin === "" || Number(job.salary) >= Number(f.salaryMin),
-    f.salaryMax === "" || Number(job.salary) <= Number(f.salaryMax),
-  ];
+    const checks = [
+      kwOk,
+      f.status.length === 0 || f.status.includes(job.status),
+      f.company.length === 0 ||
+        f.company.some((c) => c.toLowerCase() === job.company.toLowerCase()), // keep OR here
+      f.role.length === 0 ||
+        f.role.some((r) => r.toLowerCase() === job.role.toLowerCase()),
+      f.location.length === 0 ||
+        f.location.some((l) => l.toLowerCase() === job.location?.toLowerCase()),
+      f.jobType.length === 0 || f.jobType.includes(job.jobType),
+      !f.dateFrom || job.applicationDate.slice(0, 10) >= f.dateFrom,
+      !f.dateTo || job.applicationDate.slice(0, 10) <= f.dateTo,
+      f.salaryMin === "" || Number(job.salary) >= Number(f.salaryMin),
+      f.salaryMax === "" || Number(job.salary) <= Number(f.salaryMax),
+    ];
 
-  return checks.every(Boolean);
-};
+    return checks.every(Boolean);
+  };
 
   const filteredJobs = jobs.filter(jobMatches);
 
@@ -95,6 +95,20 @@ const Home = () => {
 
   //  Edit Modal
   const [editing, setEditing] = useState(null);
+
+
+//   const getJobTypeClass = (type) => {
+//   switch (type) {
+//     case "Remote":
+//       return "bg-pink-500";
+//     case "Hybrid":
+//       return "bg-purple-500";
+//     case "On-site":
+//       return "bg-yellow-500";
+//     default:
+//       return "bg-gray-500";
+//   }
+// };
 
   return (
     <div className="container mx-auto px-4 py-6">
@@ -128,7 +142,7 @@ const Home = () => {
 
       {/* edit modal */}
       {editing && (
-        <EditJob
+        <EditModal
           isOpen={!!editing}
           onClose={() => setEditing(null)}
           jobData={editing}
@@ -153,6 +167,11 @@ const Home = () => {
         currentPage={page}
         totalPages={totalPages}
         onPageChange={setPage}
+        getJobTypeClass={(jt)=>({
+          Remote: "bg-pink-100 text-pink-500",
+          Hybrid: "bg-purple-100 text-purple-500",
+          "On-site" : "bg-rose-100 text-rose-700",
+        }[jt])}
         getStatusClass={(s) =>
           ({
             Applied: "bg-blue-500",
@@ -161,6 +180,7 @@ const Home = () => {
             Rejected: "bg-red-500",
           }[s] || "bg-gray-500")
         }
+        
       />
     </div>
   );
