@@ -30,15 +30,49 @@ const Navbar = () => {
       <div className="shadow-xl pb-2 pt-6 z-10 bg-white">
         <div className="container mx-auto ">
           <div className="flex justify-between items-center">
-            <NavLink to="/">            
+            <NavLink to="/">
               <div className="text-3xl font-bold flex items-center gap-2">
                 <IoLogoBuffer />
-                Job Application Tracker</div>
+                Job Application Tracker
+              </div>
             </NavLink>
-            
 
             {isAuthenticated && (
-              <div className="flex gap-3">
+              <div className="flex gap-3 items-center">
+                
+                <NavLink
+                  to="/dashboard"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "px-3 py-2  border-b-2"
+                      : "px-3 py-2 hover:border-b-2 "
+                  }
+                >
+                  Dashboard
+                </NavLink>
+
+                <NavLink
+                  to="/insights"
+                  className={({ isActive }) =>
+                    isActive
+                     ? "px-3 py-2 border-b-2"
+                      : "px-3 py-2 hover:border-b-2 "
+                  }
+                >
+                  Insights
+                </NavLink>
+
+                <NavLink
+                  to="/profile"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "px-3 py-2 border-b-2"
+                      : "px-3 py-2 hover:border-b-2 "
+                  }
+                >
+                  Profile
+                </NavLink>
+
                 {/* Add Button */}
                 <button
                   className="bg-black text-white font-medium px-4 py-2 rounded hover:bg-gray-100 hover:text-black cursor-pointer"
@@ -57,9 +91,7 @@ const Navbar = () => {
               </div>
             )}
           </div>
-          {!isAuthenticated &&(
-              <div className="mb-4"></div>
-            )}
+          {!isAuthenticated && <div className="mb-4"></div>}
           {isAuthenticated && (
             <p className="text-gray-600 mt-2 pl-10">
               Welcome back, {user?.name || "User"}!
@@ -67,8 +99,8 @@ const Navbar = () => {
           )}
         </div>
       </div>
-      {/* Add Modal open  */}
 
+      {/* Add Modal open  */}
       {showAddModal && (
         <AddModal
           isOpen={showAddModal}

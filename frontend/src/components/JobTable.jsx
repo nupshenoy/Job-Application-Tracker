@@ -20,7 +20,7 @@ const JobTable = ({
     <div className="overflow-x-auto shadow-lg rounded-lg border border-gray-200 overflow-hidden bg-white">
       <div className="max-h-[600px] overflow-y-auto">
         <table className="w-full text-sm text-gray-500 dark:text-gray-400">
-          <thead className="sticky top-0 shadow-sm z-10 text-xs text-gray-700 uppercase bg-gray-50 text-left dark:bg-gray-700 dark:text-gray-400">
+          <thead className="sticky top-0 shadow-sm z-10 text-xs  uppercase bg-gray-100 text-left dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th className="px-6 py-3">Company</th>
               <th className="px-6 py-3">Role</th>
@@ -40,19 +40,21 @@ const JobTable = ({
               jobs.map((job) => (
                 <tr
                   key={job._id}
-                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 transition hover:shadow-sm hover:scale-[1.01] hover:bg-gray-50"
+                  className=" py-2 text-xs bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 transition hover:shadow-sm hover:scale-[1.01] hover:bg-gray-50"
                 >
-                  <td className="px-6 py-6 font-medium text-gray-900 whitespace-nowrap dark:text-white flex items-center gap-1">
-                    <TbBuilding />
-                    <span>{job.company}</span>
+                  <td className="px-6  font-semibold text-gray-900 whitespace-nowrap dark:text-white">
+                    <div className="flex items-center gap-1">
+                      <TbBuilding />
+                      <span>{job.company}</span>
+                    </div>
                   </td>
-                  <td className="px-6 py-4 font-sm text-gray-900 dark:text-white">
+                  <td className="px-6 font-medium text-gray-900 dark:text-white">
                     {job.role}
                   </td>
-                  <td className="px-6 py-4 font-sm text-gray-900 dark:text-white">
-                    {job.salary || '-'}
+                  <td className="px-6 font-medium text-gray-900 dark:text-white">
+                    {job.salary || "-"}
                   </td>
-                  <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
+                  <td className="px-6 font-medium text-gray-900 dark:text-white">
                     <span
                       className={`px-2 py-1 rounded-lg text-xs ${getJobTypeClass(
                         job.jobType
@@ -61,10 +63,10 @@ const JobTable = ({
                       {job.jobType || "-"}
                     </span>
                   </td>
-                  <td className="px-6 py-4 font-sm text-gray-900 dark:text-white">
-                    {job.location ||'-'}
+                  <td className="px-6 font-medium text-gray-900 dark:text-white">
+                    {job.location || "-"}
                   </td>
-                  <td className="px-6 py-4 font-medium text-gray-900">
+                  <td className="px-6 font-medium text-xs text-gray-900">
                     <select
                       value={job.status}
                       onChange={(e) => updateJobStatus(job._id, e.target.value)} // direct call
@@ -89,10 +91,10 @@ const JobTable = ({
                       </option>
                     </select>
                   </td>
-                  <td className="px-6 py-4 font-medium text-xs text-gray-900 dark:text-white">
+                  <td className="px-6 font-medium text-xs text-gray-900 dark:text-white">
                     {new Date(job.applicationDate).toLocaleDateString()}
                   </td>
-                  <td className="px-6 py-4 font-medium text-gray-900">
+                  <td className="px-6 font-medium text-gray-900">
                     {job.link ? (
                       <a
                         href={job.link}
@@ -106,7 +108,10 @@ const JobTable = ({
                       "-"
                     )}
                   </td>
-                  <td className="px-6 py-4 font-medium text-gray-900 dark:text-white max-w-xs break-words truncate " title={job.notes}>
+                  <td
+                    className="px-6 py-4 font-medium text-gray-900 dark:text-white max-w-xs break-words truncate "
+                    title={job.notes}
+                  >
                     {job.notes || "-"}
                   </td>
                   <td className="px-6 py-4 font-medium text-gray-900">

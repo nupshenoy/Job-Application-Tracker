@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 import { useJobs } from "../context/JobContext";
+import { useNavigate } from "react-router-dom";
 
 function AddModal({ isOpen, onClose }) {
   const { addJob } = useJobs();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     company: "",
@@ -47,6 +49,7 @@ function AddModal({ isOpen, onClose }) {
         jobType: "Unspecified",
       });
       onClose();
+      navigate("/dashboard");
     } catch (error) {
       console.error("Error adding job:", error);
       alert("Failed to add job. Please make sure you're logged in.");
@@ -60,7 +63,9 @@ function AddModal({ isOpen, onClose }) {
       <div className="relative p-4 w-full max-w-2xl bg-white rounded-lg shadow dark:bg-gray-700">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b dark:border-gray-600">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Add Job Application</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            Add Job Application
+          </h3>
           <button
             type="button"
             onClick={onClose}
@@ -74,7 +79,9 @@ function AddModal({ isOpen, onClose }) {
         <form onSubmit={handleSubmit} className="p-4">
           <div className="grid gap-4 mb-4 grid-cols-2">
             <div>
-              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Company <span className="text-red-500">*</span></label>
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                Company <span className="text-red-500">*</span>
+              </label>
               <input
                 type="text"
                 name="company"
@@ -86,7 +93,9 @@ function AddModal({ isOpen, onClose }) {
             </div>
 
             <div>
-              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Job Title <span className="text-red-500">*</span></label>
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                Job Title <span className="text-red-500">*</span>
+              </label>
               <input
                 type="text"
                 name="role"
@@ -98,7 +107,9 @@ function AddModal({ isOpen, onClose }) {
             </div>
 
             <div>
-              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status <span className="text-red-500">*</span></label>
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                Status <span className="text-red-500">*</span>
+              </label>
               <select
                 name="status"
                 value={formData.status}
@@ -113,7 +124,9 @@ function AddModal({ isOpen, onClose }) {
             </div>
 
             <div>
-              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Application Date <span className="text-red-500">*</span></label>
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                Application Date <span className="text-red-500">*</span>
+              </label>
               <input
                 type="date"
                 name="applicationDate"
@@ -125,7 +138,9 @@ function AddModal({ isOpen, onClose }) {
             </div>
 
             <div>
-              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Location</label>
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                Location
+              </label>
               <input
                 type="text"
                 name="location"
@@ -136,7 +151,9 @@ function AddModal({ isOpen, onClose }) {
             </div>
 
             <div>
-              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Salary</label>
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                Salary
+              </label>
               <input
                 type="text"
                 name="salary"
@@ -148,7 +165,9 @@ function AddModal({ isOpen, onClose }) {
             </div>
 
             <div>
-              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Job Type</label>
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                Job Type
+              </label>
               <select
                 name="jobType"
                 value={formData.jobType}
@@ -163,7 +182,9 @@ function AddModal({ isOpen, onClose }) {
             </div>
 
             <div>
-              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Resume Link</label>
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                Resume Link
+              </label>
               <input
                 type="url"
                 name="resume"
@@ -175,7 +196,9 @@ function AddModal({ isOpen, onClose }) {
           </div>
 
           <div className="mb-4">
-            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Application Link</label>
+            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Application Link
+            </label>
             <input
               type="url"
               name="link"
@@ -186,7 +209,9 @@ function AddModal({ isOpen, onClose }) {
           </div>
 
           <div className="mb-4">
-            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Notes</label>
+            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Notes
+            </label>
             <textarea
               name="notes"
               value={formData.notes}

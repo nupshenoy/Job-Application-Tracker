@@ -8,6 +8,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout";
 import RedirectIfLoggedIn from "./components/RedirectIfLoggedIn";
 import { Toaster } from 'react-hot-toast';
+import Insights from "./pages/Insights"
 
 function App() {
   return (
@@ -52,6 +53,17 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <Dashboard />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/insights"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Insights />
               </Layout>
             </ProtectedRoute>
           }
