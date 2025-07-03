@@ -20,7 +20,7 @@ const JobTable = ({
     <div className="overflow-x-auto shadow-lg rounded-lg border border-gray-200 overflow-hidden bg-white">
       <div className="max-h-[600px] overflow-y-auto">
         <table className="w-full text-sm text-gray-500 dark:text-gray-400">
-          <thead className="sticky top-0 shadow-sm z-10 text-xs  uppercase bg-gray-100 text-left dark:bg-gray-700 dark:text-gray-400">
+          <thead className="sticky top-0 shadow-sm z-10 text-xs  uppercase bg-gray-200 text-left dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th className="px-6 py-3">Company</th>
               <th className="px-6 py-3">Role</th>
@@ -32,7 +32,7 @@ const JobTable = ({
               <th className="px-6 py-3">Link</th>
               <th className="px-6 py-3">Notes</th>
               <th className="px-6 py-3">Resume</th>
-              <th className="px-6 py-3">Options</th>
+              <th className="px-6 py-3 text-center">Options</th>
             </tr>
           </thead>
           <tbody>
@@ -128,7 +128,7 @@ const JobTable = ({
                       "-"
                     )}
                   </td>
-                  <td className="px-6 py-4 font-medium text-gray-900 flex  items-center">
+                  <td className="px-6 py-4 font-medium text-gray-900 flex items-center">
                     <button
                       onClick={() => onEdit(job)}
                       className="text-blue-800 px-3 py-1 mr-1 text-lg cursor-pointer hover:text-blue-500"

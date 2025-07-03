@@ -1,7 +1,17 @@
-import { useNavigate, NavLink } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import axios from "axios";
 import { useState } from "react";
+import { useNavigate, NavLink } from "react-router-dom";
+import { motion } from "framer-motion";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
+import { IoLogoBuffer } from "react-icons/io5";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import PasswordStrengthBar from "../components/PasswordStrengthBar";
+
+const containerVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+};
 
 function SignUpPage() {
   const { login } = useAuth();
@@ -10,38 +20,6 @@ function SignUpPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   try {
-  //     const res = await fetch('http://localhost:5000/auth/register', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json'
-  //       },
-  //       body: JSON.stringify({
-  //         name: fullName,
-  //         email,
-  //         password
-  //       })
-  //     });
-
-  //     const data = await res.json();
-
-  //     if (!res.ok) {
-  //       alert(data.message || 'Signup failed');
-  //       return;
-  //     }
-
-  //     // Save token and redirect
-  //     localStorage.setItem('token', data.token);
-  //     localStorage.setItem("username", res.data.user.name);
-  //     navigate('/dashboard');
-  //   } catch (err) {
-  //     alert('Something went wrong');
-  //   }
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -52,8 +30,6 @@ function SignUpPage() {
         password,
       });
 
-      console.log("Signup response:", res.data);
-
       login(res.data.user, res.data.token);
       navigate("/dashboard");
     } catch (error) {
@@ -63,74 +39,98 @@ function SignUpPage() {
   };
 
   return (
-    <div className=" w-full pt-16">
-      <div className="container mx-auto w-1/3 p-6 bg-white shadow-md rounded-lg">
-        <p className="text-4xl font-bold mb-2">Get Started</p>
-        <p className="text-sm text-gray-500 mb-8 pb-3 border-b border-gray-300">
-          Create your job tracker account
-        </p>
-        <form onSubmit={handleSubmit}>
-          <div className="flex gap-3">
-            <div className="flex flex-col flex-1">
-              <label className="text-md m-1 font-semibold">
-                Full Name
-                <span className="text-red-700"> *</span>
-              </label>
-              <input
-                type="text"
-                placeholder="First and last name, e.g John Doe"
-                className="border border-gray-300 rounded-md p-3"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              ></input>
-            </div>
-          </div>
-          <div className="flex flex-col mt-5">
-            <label className="text-md m-1 font-semibold">
-              Email
-              <span className="text-red-700"> *</span>
-            </label>
-            <input
-              type="email"
-              placeholder="Email"
-              className="border border-gray-300 rounded-md p-3"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            ></input>
+    <>
+      
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-200">
+        <motion.div
+          className="bg-white shadow-xl rounded-lg overflow-hidden max-w-4xl w-full grid grid-cols-1 md:grid-cols-2"
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
+        >
+          {/* Left Branding */}
+          <div className="hidden md:flex flex-col items-center justify-center bg-gray-100 p-10 text-gray-800">
+            <IoLogoBuffer className="text-5xl mb-4" />
+            <h2 className="text-3xl font-bold mb-2">Job Tracker</h2>
+            <p className="text-sm text-gray-600 text-center">
+              Stay organized and crush your job search.
+            </p>
           </div>
 
-          <div className="flex flex-col mt-5">
-            <label className="text-md m-1 font-semibold">
-              Password
-              <span className="text-red-700"> *</span>
-            </label>
-            <input
-              type="password"
-              placeholder="Password"
-              className="border border-gray-300 rounded-md p-3"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            ></input>
-          </div>
+          {/* Right Form */}
+          <div className="p-8 sm:p-12">
+            <h1 className="text-3xl font-bold mb-2 text-gray-900">
+              Create Account
+            </h1>
+            <p className="text-sm text-gray-500 mb-6">
+              Sign up to start tracking your job applications
+            </p>
 
-          <div className="text-center mt-6">
-            <button
-              type="submit"
-              className="bg-black text-white p-3  rounded w-full cursor-pointer hover:bg-gray-300 hover:text-black"
-            >
-              Submit
-            </button>
-          </div>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div>
+                <label className="block text-sm mb-1 font-medium text-gray-700">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. John Doe"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-black"
+                />
+              </div>
 
-          <div className="text-center m-6 text-xs font-semibold cursor-pointer">
-            <NavLink to="/login">Already have an account? Sign in</NavLink>
+              <div>
+                <label className="block text-sm mb-1 font-medium text-gray-700">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-black"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm mb-1 font-medium text-gray-700">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-black"
+                />
+                <PasswordStrengthBar password={password} />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-black hover:bg-gray-800 text-white font-semibold py-3 rounded transition cursor-pointer"
+              >
+                Sign Up
+              </button>
+
+              <div className="text-center text-sm text-gray-600 mt-4">
+                Already have an account?{" "}
+                <NavLink
+                  to="/login"
+                  className="text-black font-semibold hover:underline"
+                >
+                  Sign In
+                </NavLink>
+              </div>
+            </form>
           </div>
-        </form>
+        </motion.div>
       </div>
-    </div>
+    </>
   );
 }
 

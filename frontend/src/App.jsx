@@ -9,6 +9,7 @@ import Layout from "./components/Layout";
 import RedirectIfLoggedIn from "./components/RedirectIfLoggedIn";
 import { Toaster } from 'react-hot-toast';
 import Insights from "./pages/Insights"
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
   return (
@@ -20,9 +21,9 @@ function App() {
           path="/"
           element={
             <RedirectIfLoggedIn>
-              <Layout>
+              
                 <LandingPage />
-              </Layout>
+              
             </RedirectIfLoggedIn>
           }
         />
@@ -32,7 +33,7 @@ function App() {
             <RedirectIfLoggedIn>
               <Layout>
                 <LoginPage />
-              </Layout>
+             </Layout>
             </RedirectIfLoggedIn>
           }
         />
@@ -42,7 +43,7 @@ function App() {
             <RedirectIfLoggedIn>
               <Layout>
                 <SignUpPage />
-              </Layout>
+          </Layout>
             </RedirectIfLoggedIn>
           }
         />
@@ -64,6 +65,17 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <Insights />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <ProfilePage />
               </Layout>
             </ProtectedRoute>
           }

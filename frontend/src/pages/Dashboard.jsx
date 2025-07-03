@@ -5,6 +5,16 @@ import JobTable from "../components/JobTable";
 import FiltersModal from "../components/FiltersModal";
 import FilterToolbar from "../components/FilterToolbar";
 import FilterChips from "../components/FilterChips";
+import { motion } from "framer-motion";
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i = 1) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.1, duration: 0.6, ease: "easeOut" },
+  }),
+};
 
 const Home = () => {
   const { jobs, deleteJob, updateJobStatus, updateJob } = useJobs();
@@ -87,7 +97,7 @@ const Home = () => {
 
   // Pagination
   const [page, setPage] = useState(1);
-  const perPage = 10;
+  const perPage = 25;
   useEffect(() => setPage(1), [filters]);
   const sliceStart = (page - 1) * perPage;
   const pageJobs = filteredJobs.slice(sliceStart, sliceStart + perPage);
@@ -96,41 +106,49 @@ const Home = () => {
   //  Edit Modal
   const [editing, setEditing] = useState(null);
 
-
-//   const getJobTypeClass = (type) => {
-//   switch (type) {
-//     case "Remote":
-//       return "bg-pink-500";
-//     case "Hybrid":
-//       return "bg-purple-500";
-//     case "On-site":
-//       return "bg-yellow-500";
-//     default:
-//       return "bg-gray-500";
-//   }
-// };
+  //   switch (type) {
+  //     case "Remote":
+  //       return "bg-pink-500";
+  //     case "Hybrid":
+  //       return "bg-purple-500";
+  //     case "On-site":
+  //       return "bg-yellow-500";
+  //     default:
+  //       return "bg-gray-500";
+  //   }
+  // };
 
   return (
-    <div className="container mx-auto px-4 py-6">
+    <motion.div
+      className="container mx-auto px-4 py-6"
+      initial="hidden"
+      animate="visible"
+      variants={fadeInUp}
+    >
       {/* toolbar */}
-      <FilterToolbar
-        keyword={filters.keyword}
-        setKeyword={(k) => setFilters((p) => ({ ...p, keyword: k }))}
-        onOpenModal={() => setShowModal(true)}
-        hasActiveFilters={hasActive}
-        onClearFilters={clearFilters}
-      />
+      <motion.div custom={1} variants={fadeInUp}>
+        <FilterToolbar
+          keyword={filters.keyword}
+          setKeyword={(k) => setFilters((p) => ({ ...p, keyword: k }))}
+          onOpenModal={() => setShowModal(true)}
+          hasActiveFilters={hasActive}
+          onClearFilters={clearFilters}
+        />
+      </motion.div>
 
       {/* chips */}
-      <FilterChips
-        filters={filters}
-        setFilters={setFilters}
-        showAllChips={false}
-        setShowAllChips={() => {}}
-      />
+      <motion.div custom={2} variants={fadeInUp}>
+        <FilterChips
+          filters={filters}
+          setFilters={setFilters}
+          showAllChips={false}
+          setShowAllChips={() => {}}
+        />
+      </motion.div>
 
       {/* modal */}
       {showModal && (
+        // <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
         <FiltersModal
           jobs={jobs}
           filters={filters}
@@ -138,10 +156,12 @@ const Home = () => {
           onClose={() => setShowModal(false)}
           onClear={clearFilters}
         />
+        // </motion.div>
       )}
 
       {/* edit modal */}
       {editing && (
+        // <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
         <EditModal
           isOpen={!!editing}
           onClose={() => setEditing(null)}
@@ -151,38 +171,46 @@ const Home = () => {
             setEditing(null);
           }}
         />
+        // </motion.div>
       )}
 
       {/* count */}
-      <p className="text-sm text-gray-600 font-semibold mb-2 mx-2">
+      <motion.p
+        className="text-sm text-gray-600 font-semibold mb-2 mx-2"
+        custom={3}
+        variants={fadeInUp}
+      >
         Showing {filteredJobs.length} job{filteredJobs.length !== 1 && "s"}
-      </p>
+      </motion.p>
 
       {/* table */}
-      <JobTable
-        jobs={pageJobs}
-        onEdit={(j) => setEditing(j)}
-        onDelete={deleteJob}
-        onStatusChange={updateJobStatus}
-        currentPage={page}
-        totalPages={totalPages}
-        onPageChange={setPage}
-        getJobTypeClass={(jt)=>({
-          Remote: "bg-pink-100 text-pink-500",
-          Hybrid: "bg-purple-100 text-purple-500",
-          "On-site" : "bg-rose-100 text-rose-700",
-        }[jt])}
-        getStatusClass={(s) =>
-          ({
-            Applied: "bg-blue-500",
-            Interview: "bg-yellow-500",
-            Offer: "bg-green-500",
-            Rejected: "bg-red-500",
-          }[s] || "bg-gray-500")
-        }
-        
-      />
-    </div>
+      <motion.div custom={4} variants={fadeInUp}>
+        <JobTable
+          jobs={pageJobs}
+          onEdit={(j) => setEditing(j)}
+          onDelete={deleteJob}
+          onStatusChange={updateJobStatus}
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+          getJobTypeClass={(jt) =>
+            ({
+              Remote: "bg-pink-100 text-pink-500",
+              Hybrid: "bg-purple-100 text-purple-500",
+              "On-site": "bg-rose-100 text-rose-700",
+            }[jt])
+          }
+          getStatusClass={(s) =>
+            ({
+              Applied: "bg-blue-500",
+              Interview: "bg-yellow-500",
+              Offer: "bg-green-500",
+              Rejected: "bg-red-500",
+            }[s] || "bg-gray-500")
+          }
+        />
+      </motion.div>
+    </motion.div>
   );
 };
 

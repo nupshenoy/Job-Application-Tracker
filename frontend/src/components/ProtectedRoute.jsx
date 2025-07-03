@@ -9,7 +9,7 @@ const ProtectedRoute = ({ children }) => {
     return <div className="text-center mt-10">Loading...</div>; // or spinner
   }
 
-  return user ? children : <Navigate to="/login" />;
+  return user ? children : <Navigate to="/" />;
 };
 
 export default ProtectedRoute;

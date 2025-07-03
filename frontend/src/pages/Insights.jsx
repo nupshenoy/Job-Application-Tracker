@@ -64,11 +64,26 @@ const ChartBox = ({ title, height = 220, children }) => (
 );
 
 const StatCard = ({ label, value }) => (
-  <div className="bg-white rounded-lg shadow-sm p-4 text-center border border-gray-100">
+  <div className={`${getLabel(label)} rounded-lg p-4 shadow-sm text-center border-2 border-double border-green-600`}>
     <p className="text-xs text-gray-500">{label}</p>
     <p className="text-xl font-semibold text-gray-800">{value}</p>
   </div>
 );
+
+const getLabel = (label) =>{
+    switch(label){
+        case 'Applied':
+            return "bg-blue-100";
+        case 'Interview':
+            return "bg-yellow-100";
+        case 'Offer':
+            return "bg-green-100";
+        case 'Rejected':
+            return "bg-red-100";
+        default:
+            return "bg-purple-100"
+        }
+}
 
 /* ─── Insights page ─────────────────────────── */
 const Insights = () => {
@@ -130,7 +145,7 @@ const Insights = () => {
         {/* ── Stat Cards Row ── */}
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-6">
           <StatCard label="Total"     value={jobs.length} />
-          <StatCard label="Applied"   value={statusCounts.Applied   || 0} />
+          <StatCard label="Applied" value={statusCounts.Applied   || 0} />
           <StatCard label="Interview" value={statusCounts.Interview || 0} />
           <StatCard label="Offer"     value={statusCounts.Offer     || 0} />
           <StatCard label="Rejected"  value={statusCounts.Rejected  || 0} />
