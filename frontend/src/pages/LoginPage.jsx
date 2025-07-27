@@ -46,7 +46,7 @@ function LoginPage() {
           {/* Left Branding */}
           <div className="hidden md:flex flex-col items-center justify-center bg-gray-100 p-10 text-gray-800">
             <IoLogoBuffer className="text-5xl mb-4" />
-            <h2 className="text-3xl font-bold mb-2">Job Tracker</h2>
+            <h2 className="text-3xl font-bold mb-2">JobTrackr</h2>
             <p className="text-sm text-gray-600 text-center">
               Organize. Track. Conquer your job hunt.
             </p>
