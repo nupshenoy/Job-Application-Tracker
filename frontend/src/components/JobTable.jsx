@@ -4,6 +4,7 @@ import { FaTrashAlt } from "react-icons/fa";
 import { useJobs } from "../context/JobContext";
 import Pagination from "./Pagination";
 import { TbBuilding } from "react-icons/tb";
+import { LuDownload } from "react-icons/lu";
 
 const JobTable = ({
   jobs,
@@ -25,8 +26,9 @@ const JobTable = ({
               <th className="px-6 py-3">Company</th>
               <th className="px-6 py-3">Role</th>
               <th className="px-6 py-3">Salary</th>
-              <th className="px-6 py-3">Location</th>
               <th className="px-6 py-3">Job Type</th>
+              <th className="px-6 py-3">Location</th>
+              
               <th className="px-6 py-3">Status</th>
               <th className="px-6 py-3">Application Date</th>
               <th className="px-6 py-3">Link</th>
@@ -52,7 +54,7 @@ const JobTable = ({
                     {job.role}
                   </td>
                   <td className="px-6 font-medium text-gray-900 dark:text-white">
-                    {job.salary || "-"}
+                    {job.salary }
                   </td>
                   <td className="px-6 font-medium text-gray-900 dark:text-white">
                     <span
@@ -60,11 +62,11 @@ const JobTable = ({
                         job.jobType
                       )}`}
                     >
-                      {job.jobType || "-"}
+                      {job.jobType }
                     </span>
                   </td>
                   <td className="px-6 font-medium text-gray-900 dark:text-white">
-                    {job.location || "-"}
+                    {job.location }
                   </td>
                   <td className="px-6 font-medium text-xs text-gray-900">
                     <select
@@ -94,7 +96,7 @@ const JobTable = ({
                   <td className="px-6 font-medium text-xs text-gray-900 dark:text-white">
                     {new Date(job.applicationDate).toLocaleDateString()}
                   </td>
-                  <td className="px-6 font-medium text-gray-900">
+                  <td className="px-6 font-medium text-gray-400">
                     {job.link ? (
                       <a
                         href={job.link}
@@ -109,23 +111,24 @@ const JobTable = ({
                     )}
                   </td>
                   <td
-                    className="px-6 py-4 font-medium text-gray-900 dark:text-white max-w-xs break-words truncate "
+                    className="px-6 py-4 font-medium text-gray-800 dark:text-white max-w-xs break-words truncate "
                     title={job.notes}
                   >
-                    {job.notes || "-"}
+                    {job.notes}
                   </td>
-                  <td className="px-6 py-4 font-medium text-gray-900">
+                  <td className="px-6 py-4 font-medium text-gray-400 ">
                     {job.resume ? (
                       <a
                         href={job.resume}
-                        className="text-indigo-500 hover:text-indigo-400"
+                        className="text-indigo-500 hover:text-indigo-400 text-xl"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        Resume
+                        <LuDownload />
+                        
                       </a>
                     ) : (
-                      "-"
+                      "None"
                     )}
                   </td>
                   <td className="px-6 py-4 font-medium text-gray-900 flex items-center">

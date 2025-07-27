@@ -1,11 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { IoCloseOutline } from "react-icons/io5";
+import { CiCircleRemove } from "react-icons/ci";
 import { useJobs } from "../context/JobContext";
 import { useNavigate } from "react-router-dom";
+import ResumeUploader from "./ResumeUploader";
+import axios from "axios";
 
 function AddModal({ isOpen, onClose }) {
   const { addJob } = useJobs();
   const navigate = useNavigate();
+const { uploadResume, resumeOptions, fetchResumeOptions } = useJobs();
+
+useEffect(() => {
+  if (isOpen) {
+    fetchResumeOptions();
+  }
+}, [isOpen]);
+
+
+  // const [resumeFile, setResumeFile] = useState(null);
+  // const [resumeOptions, setResumeOptions] = useState([]);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // useEffect(() => {
+  //   if (isOpen) {
+  //     fetch("http://localhost:5000/resume", {
+  //       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+  //     })
+  //       .then((res) => res.json())
+  //       .then((data) => setResumeOptions(data))
+  //       .catch((err) => console.error("Failed to fetch resumes", err));
+  //   }
+  // }, [isOpen]);
 
   const [formData, setFormData] = useState({
     company: "",
@@ -35,6 +62,25 @@ function AddModal({ isOpen, onClose }) {
     }
 
     try {
+      setIsSubmitting(true);
+      // if (resumeFile) {
+      //   const data = new FormData();
+      //   data.append("resume", resumeFile);
+
+      //   const response = await axios.post(
+      //     "http://localhost:5000/resume/upload",
+      //     data,
+      //     {
+      //       headers: {
+      //         "Content-Type": "multipart/form-data",
+      //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+      //       },
+      //     }
+      //   );
+
+      //   formData.resume = response.data.url;
+      // }
+
       await addJob(formData);
       setFormData({
         company: "",
@@ -48,11 +94,22 @@ function AddModal({ isOpen, onClose }) {
         location: "",
         jobType: "Unspecified",
       });
+      // setResumeFile(null);
+      setIsSubmitting(false);
       onClose();
       navigate("/dashboard");
     } catch (error) {
       console.error("Error adding job:", error);
       alert("Failed to add job. Please make sure you're logged in.");
+    }
+  };
+
+  const fileInputRef = useRef(null);
+
+  const handleRemoveFile = () => {
+    setResumeFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
   };
 
@@ -181,59 +238,86 @@ function AddModal({ isOpen, onClose }) {
               </select>
             </div>
 
-            <div>
+            <div className="mb-4">
               <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Resume Link
+                Application Link
               </label>
               <input
                 type="url"
-                name="resume"
-                value={formData.resume}
+                name="link"
+                value={formData.link}
                 onChange={handleChange}
                 className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
               />
             </div>
-          </div>
 
-          <div className="mb-4">
-            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Application Link
-            </label>
-            <input
-              type="url"
-              name="link"
-              value={formData.link}
-              onChange={handleChange}
-              className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
-            />
-          </div>
+            {/* Resume */}
+            
 
-          <div className="mb-4">
-            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Notes
-            </label>
-            <textarea
-              name="notes"
-              value={formData.notes}
-              onChange={handleChange}
-              rows={3}
-              className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
-            />
-          </div>
+            <ResumeUploader
+  value={formData.resume}
+  onChange={(resumeUrl) => setFormData((prev) => ({ ...prev, resume: resumeUrl }))}
+  resumeOptions={resumeOptions}
+  uploadResume={uploadResume}
+/>
 
+            <div className="mb-4 col-span-2">
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                Notes
+              </label>
+              <textarea
+                name="notes"
+                value={formData.notes}
+                onChange={handleChange}
+                rows={3}
+                className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+              />
+            </div>
+          </div>
           <div className="flex justify-end gap-3 mt-4">
             <button
               type="button"
               onClick={onClose}
-              className="bg-gray-100 text-black px-4 py-2 rounded-md hover:bg-gray-300 cursor-pointer transition"
+              className="bg-gray-100 text-black text-sm px-4 py-2 rounded-md hover:bg-gray-300 cursor-pointer transition"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-300 hover:text-black cursor-pointer transition"
+              disabled={isSubmitting}
+              className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-white  ${
+                isSubmitting
+                  ? "bg-gray-500 text-gray-800 cursor-not-allowed"
+                  : "bg-black text-white hover:bg-gray-300 hover:text-black cursor-pointer transition"
+              } focus:outline-none focus:ring-2 focus:ring-blue-500`}
             >
-              Submit
+              {isSubmitting ? (
+                <>
+                  <svg
+                    className="animate-spin h-4 w-4 mr-2 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                    ></path>
+                  </svg>
+                  Submitting...
+                </>
+              ) : (
+                "Submit"
+              )}
             </button>
           </div>
         </form>

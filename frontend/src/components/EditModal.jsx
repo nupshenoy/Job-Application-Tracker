@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 import { useJobs } from "../context/JobContext";
+import ResumeUploader from "./ResumeUploader";
 
 const EditModal = ({ isOpen, onClose, jobData }) => {
-  const { updateJob } = useJobs();
+  const { updateJob, uploadResume, resumeOptions, fetchResumeOptions } = useJobs();
   const [form, setForm] = useState({
     company: "",
     role: "",
@@ -33,6 +34,12 @@ const EditModal = ({ isOpen, onClose, jobData }) => {
       });
     }
   }, [jobData]);
+
+  useEffect(() => {
+  if (isOpen) {
+    fetchResumeOptions();
+  }
+}, [isOpen]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -155,19 +162,7 @@ const EditModal = ({ isOpen, onClose, jobData }) => {
               </select>
             </div>
 
-            <div>
-              <label className="block mb-1 text-sm font-medium">Resume Link</label>
-              <input
-                type="url"
-                name="resume"
-                value={form.resume}
-                onChange={handleChange}
-                className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
-              />
-            </div>
-          </div>
-
-          <div className="mb-4">
+             <div className="mb-4">
             <label className="block mb-1 text-sm font-medium">Application Link</label>
             <input
               type="url"
@@ -177,6 +172,17 @@ const EditModal = ({ isOpen, onClose, jobData }) => {
              className="w-full p-2.5 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:outline-none focus:ring-blue-200 bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"
             />
           </div>
+
+          </div>
+
+         
+
+          <ResumeUploader
+  value={form.resume}
+  onChange={(resumeUrl) => setForm((prev) => ({ ...prev, resume: resumeUrl }))}
+  resumeOptions={resumeOptions}
+  uploadResume={uploadResume}
+/>
 
           <div className="mb-4">
             <label className="block mb-1 text-sm font-medium">Notes</label>
